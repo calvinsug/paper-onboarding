@@ -90,7 +90,7 @@ extension PageView {
   func currentIndex(_ index: Int, animated: Bool) {
     
     if 0..<itemsCount ~= index {
-      containerView?.currenteIndex(index, duration: duration * 0.5, animated: animated)
+      containerView?.currentIndex(index, duration: duration * 0.5, animated: animated)
       moveContainerTo(index, animated: animated, duration: duration)
     }
   }
