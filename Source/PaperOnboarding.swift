@@ -77,8 +77,8 @@ public extension PaperOnboarding {
       })
       
       
-      if let postion = pageView?.positionItemIndex(index, onView: self) {
-        fillAnimationView?.fillAnimation(backgroundColor(currentIndex), centerPosition: postion, duration: 0.5)
+      if let position = pageView?.positionItemIndex(index, onView: self) {
+        fillAnimationView?.fillAnimation(backgroundColor(currentIndex), centerPosition: position, duration: 0.5)
       }
       pageView?.currentIndex(index, animated: animated)
       contentView?.currentItem(index, animated: animated)

@@ -38,7 +38,7 @@ class PageContrainer: UIView {
 
 extension PageContrainer {
   
-  func currenteIndex(_ index: Int, duration: Double, animated: Bool) {
+  func currentIndex(_ index: Int, duration: Double, animated: Bool) {
     guard let items = self.items ,
       index != currentIndex else {return}
     
