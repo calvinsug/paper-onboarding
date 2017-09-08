@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVKit
+import AVFoundation
 
  open class OnboardingContentViewItem: UIView {
   
@@ -14,8 +16,12 @@ import UIKit
   var centerConstraint: NSLayoutConstraint?
   
   open var imageView: UIImageView?
+  open var moviePlayerController: AVPlayerViewController?
+  open var moviePlayer: AVPlayer?
+  open var movieView: UIView?
   open var titleLabel: UILabel?
   open var descriptionLabel: UILabel?
+  open var index: Int?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -38,7 +44,6 @@ extension OnboardingContentViewItem {
     }
     
     view.addSubview(item)
-    
     // add constraints
     item >>>- {
       $0.attribute = .height
@@ -74,6 +79,7 @@ private extension OnboardingContentViewItem {
     let titleLabel       = createTitleLabel(self)
     let descriptionLabel = createDescriptionLabel(self)
     let imageView        = createImage(self)
+    let movieView        = createMovieView(self)
 
     // added constraints
     centerConstraint = (self, titleLabel, imageView) >>>- {
@@ -82,16 +88,19 @@ private extension OnboardingContentViewItem {
       $0.constant        = 50
       return
     }
+    
     (self, descriptionLabel, titleLabel) >>>- {
       $0.attribute       = .top
       $0.secondAttribute = .bottom
       $0.constant        = 10
       return
     }
+    
 
     self.titleLabel       = titleLabel
     self.descriptionLabel = descriptionLabel
     self.imageView        = imageView
+    self.movieView        = movieView
   }
 
   func createTitleLabel(_ onView: UIView) -> UILabel {
@@ -157,25 +166,54 @@ private extension OnboardingContentViewItem {
 
   func createImage(_ onView: UIView) -> UIImageView {
     let imageView = Init(UIImageView(frame: CGRect.zero)) {
-      $0.contentMode                               = .scaleAspectFit
+      $0.contentMode                               = .scaleAspectFill
       $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     onView.addSubview(imageView)
     
-    // add constratints
+    // add constraints
     for attribute in [NSLayoutAttribute.width, NSLayoutAttribute.height] {
       imageView >>>- {
         $0.attribute = attribute
-        $0.constant  = 188
+        $0.constant  = 130
         return
       }
     }
     
     for attribute in [NSLayoutAttribute.centerX, NSLayoutAttribute.top] {
+        print(attribute.rawValue)
+        
       (onView, imageView) >>>- { $0.attribute = attribute; return }
     }
     
     return imageView
+  }
+
+  func createMovieView(_ onView: UIView) -> UIView {
+    let movieView = Init(UIView(frame: .zero)) {
+        $0.backgroundColor = .blue
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    onView.addSubview(movieView)
+    
+    for (attribute, constant) in [(NSLayoutAttribute.width, 116), (NSLayoutAttribute.height, 198)] {
+        movieView >>>- {
+            $0.attribute = attribute
+            $0.constant  = CGFloat(constant)
+            return
+        }
+    }
+    
+    for (attribute, constant) in [(NSLayoutAttribute.centerX, 0), (NSLayoutAttribute.top, -33)] {
+        (onView, movieView) >>>- {
+            $0.attribute = attribute;
+            $0.constant = CGFloat(constant)
+            return
+        }
+    }
+    
+    return movieView
   }
 }
