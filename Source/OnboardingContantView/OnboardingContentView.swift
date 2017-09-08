@@ -104,14 +104,14 @@ extension OnboardingContentView {
         $0.movieView?.isHidden = false
         let urlpath     = Bundle.main.path(forResource: info.videoName, ofType: "mp4")
         let url         = NSURL.fileURL(withPath: urlpath!)
-        let player = AVPlayer(url: url)
+        weak var player = AVPlayer(url: url)
         $0.movieController?.player = player
         $0.movieController?.player?.play()
         
         NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: $0.movieController?.player?.currentItem, queue: nil)
         { notification in
-            player.seek(to: kCMTimeZero)
-            player.play()
+            player?.seek(to: kCMTimeZero)
+            player?.play()
         }
       }
     }
