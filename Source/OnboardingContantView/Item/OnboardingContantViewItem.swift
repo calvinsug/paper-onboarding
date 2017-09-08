@@ -16,8 +16,7 @@ import AVFoundation
   var centerConstraint: NSLayoutConstraint?
   
   open var imageView: UIImageView?
-  open var moviePlayerController: AVPlayerViewController?
-  open var moviePlayer: AVPlayer?
+  open var movieController: AVPlayerViewController?
   open var movieView: UIView?
   open var titleLabel: UILabel?
   open var descriptionLabel: UILabel?
@@ -75,7 +74,6 @@ extension OnboardingContentViewItem {
 private extension OnboardingContentViewItem {
   
   func commonInit() {
-    
     let titleLabel       = createTitleLabel(self)
     let descriptionLabel = createDescriptionLabel(self)
     let imageView        = createImage(self)
@@ -92,15 +90,15 @@ private extension OnboardingContentViewItem {
     (self, descriptionLabel, titleLabel) >>>- {
       $0.attribute       = .top
       $0.secondAttribute = .bottom
-      $0.constant        = 10
+      $0.constant        = 40
       return
     }
-    
 
     self.titleLabel       = titleLabel
     self.descriptionLabel = descriptionLabel
     self.imageView        = imageView
     self.movieView        = movieView
+    self.movieController  = createMovieController()
   }
 
   func createTitleLabel(_ onView: UIView) -> UILabel {
@@ -181,24 +179,27 @@ private extension OnboardingContentViewItem {
       }
     }
     
-    for attribute in [NSLayoutAttribute.centerX, NSLayoutAttribute.top] {
-        print(attribute.rawValue)
-        
-      (onView, imageView) >>>- { $0.attribute = attribute; return }
+    for (attribute, constant) in [(NSLayoutAttribute.centerX, 0), (NSLayoutAttribute.top, 33)] {
+      (onView, imageView) >>>- {
+        $0.attribute = attribute;
+        $0.constant = CGFloat(constant)
+        return
+      }
     }
     
     return imageView
   }
 
   func createMovieView(_ onView: UIView) -> UIView {
-    let movieView = Init(UIView(frame: .zero)) {
+    let movieView = Init(UIView(frame: CGRect(x: 0, y: 0, width: 114, height: 198))) {
         $0.backgroundColor = .blue
         $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.isHidden = true
     }
     
     onView.addSubview(movieView)
     
-    for (attribute, constant) in [(NSLayoutAttribute.width, 116), (NSLayoutAttribute.height, 198)] {
+    for (attribute, constant) in [(NSLayoutAttribute.width, 114), (NSLayoutAttribute.height, 198)] {
         movieView >>>- {
             $0.attribute = attribute
             $0.constant  = CGFloat(constant)
@@ -206,7 +207,7 @@ private extension OnboardingContentViewItem {
         }
     }
     
-    for (attribute, constant) in [(NSLayoutAttribute.centerX, 0), (NSLayoutAttribute.top, -33)] {
+    for (attribute, constant) in [(NSLayoutAttribute.centerX, 0), (NSLayoutAttribute.top, 0)] {
         (onView, movieView) >>>- {
             $0.attribute = attribute;
             $0.constant = CGFloat(constant)
@@ -216,4 +217,16 @@ private extension OnboardingContentViewItem {
     
     return movieView
   }
+    
+  func createMovieController() -> AVPlayerViewController {
+    let movieController = Init(AVPlayerViewController()) {
+        $0.showsPlaybackControls = false
+        $0.view.frame = CGRect(x: 0, y: 0, width: 114, height: 198)
+    }
+    
+    movieView?.addSubview(movieController.view)
+    
+    return movieController
+  }
+    
 }
